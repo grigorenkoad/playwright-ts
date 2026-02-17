@@ -29,7 +29,6 @@ jobs:
         API_BASE_URL: ${{ secrets.API_BASE_URL }}
     - name: Upload Allure results
       run: |
-        tar -czf allure-results.tar.gz allure-results
         curl -X POST "https://b46e-80-238-117-154.ngrok-free.app/allure-docker-service/send-results?project_id=default" \
           -H "Content-Type: multipart/form-data" \
           -F "files[]=@allure-results/*"
