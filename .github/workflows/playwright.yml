@@ -32,7 +32,7 @@ jobs:
         tar -czf allure-results.tar.gz allure-results
         curl -X POST "https://b46e-80-238-117-154.ngrok-free.app/allure-docker-service/send-results?project_id=default" \
           -H "Content-Type: multipart/form-data" \
-          -F "files[]=@allure-results"
+          -F "files[]=@allure-results.tar.gz"
     - name: Generate Allure report
       run: |
         curl "https://b46e-80-238-117-154.ngrok-free.app/allure-docker-service/generate-report?project_id=default"
