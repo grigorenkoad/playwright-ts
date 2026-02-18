@@ -25,12 +25,20 @@ jobs:
       env:
         UI_BASE_URL: ${{ secrets.UI_BASE_URL }}
         API_BASE_URL: ${{ secrets.API_BASE_URL }}
+    - name: Debug files
+      run: |
+          echo "Listing workspace:"
+          ls -la
+          echo "Listing allure-results:"
+          ls -la allure-results || true
     - name: Upload results to Allure Server
       if: always()
       run: |
-          curl -X POST "$ALLURE_URL/allure-docker-service/send-results?project_id=$ALLURE_PROJECT_ID" \
-          -H "Content-Type: multipart/form-data" \
-          -F "files[]=@./allure-results/*"
+          for file in allure-results/*; do
+            curl -X POST "$ALLURE_URL/allure-docker-service/send-results?project_id=$ALLURE_PROJECT_ID" \
+            -H "Content-Type: multipart/form-data" \
+            -F "files[]=@$file"
+          done
     - name: Generate Allure report
       run: |
         sleep 5
