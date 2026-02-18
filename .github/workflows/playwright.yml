@@ -8,6 +8,9 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    env:
+        ALLURE_PROJECT_ID: playwright
+        ALLURE_URL: https://b46e-80-238-117-154.ngrok-free.app
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
@@ -17,30 +20,25 @@ jobs:
       run: npm ci
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
-    - name: Download Allure history
-      run: |
-        mkdir -p allure-results/history
-        curl -s "https://b46e-80-238-117-154.ngrok-free.app/allure-docker-service/history?project_id=default" \
-          | tar -xz -C allure-results/history || true
     - name: Run Playwright tests
       run: npx playwright test
       env:
         UI_BASE_URL: ${{ secrets.UI_BASE_URL }}
         API_BASE_URL: ${{ secrets.API_BASE_URL }}
-    - name: Upload Allure results
+    - name: Upload results to Allure Server
       if: always()
       run: |
-        curl -X POST "https://b46e-80-238-117-154.ngrok-free.app" \
+          curl -X POST "$ALLURE_URL/allure-docker-service/send-results?project_id=$ALLURE_PROJECT_ID" \
           -H "Content-Type: multipart/form-data" \
-          -F "files[]=@allure-results/*"
+          -F "files[]=@./allure-results/*"
     - name: Generate Allure report
       run: |
         sleep 5
-        curl "https://b46e-80-238-117-154.ngrok-free.app/allure-docker-service/generate-report?project_id=default"
+        curl "$ALLURE_URL/allure-docker-service/generate-report?project_id=$ALLURE_PROJECT_ID"
     - name: Print Allure URL
       run: |
         echo "Allure report:"
-        echo "https://b46e-80-238-117-154.ngrok-free.app/allure-docker-service/latest-report?project_id=default"
+        echo "$ALLURE_URL/allure-docker-service/latest-report?project_id=$ALLURE_PROJECT_ID"
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
