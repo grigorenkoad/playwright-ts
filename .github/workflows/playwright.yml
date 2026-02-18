@@ -28,11 +28,9 @@ jobs:
     - name: Upload results to Allure Server
       if: always()
       run: |
-          for file in allure-results/*; do
-            curl -X POST "$ALLURE_URL/allure-docker-service/send-results?project_id=$ALLURE_PROJECT_ID" \
-            -H "Content-Type: multipart/form-data" \
-            -F "files[]=@$file"
-          done
+        curl -X POST "$ALLURE_URL/allure-docker-service/send-results?project_id=$ALLURE_PROJECT_ID" \
+        -H "Content-Type: multipart/form-data" \
+        -F "files[]=@allure-results"
     - name: Generate Allure report
       run: |
         sleep 5
