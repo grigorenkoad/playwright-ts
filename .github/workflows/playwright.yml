@@ -33,7 +33,7 @@ jobs:
         -F "files[]=@allure-results"
     - name: Generate Allure report
       run: |
-        sleep 5
+        sleep 15
         curl "$ALLURE_URL/allure-docker-service/generate-report?project_id=$ALLURE_PROJECT_ID"
     - name: Print Allure URL
       run: |
