@@ -25,12 +25,6 @@ jobs:
       env:
         UI_BASE_URL: ${{ secrets.UI_BASE_URL }}
         API_BASE_URL: ${{ secrets.API_BASE_URL }}
-    - name: Debug files
-      run: |
-          echo "Listing workspace:"
-          ls -la
-          echo "Listing allure-results:"
-          ls -la allure-results || true
     - name: Upload results to Allure Server
       if: always()
       run: |
